@@ -1,0 +1,83 @@
+{
+  "project_info": {
+    "project_number": "409949833300",
+    "firebase_url": "https://first-one-9d7d3.firebaseio.com",
+    "project_id": "first-one-9d7d3",
+    "storage_bucket": "first-one-9d7d3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:409949833300:android:6b76c1d8d4895dd77105c1",
+        "android_client_info": {
+          "package_name": "com.mini_chat.app.mini_chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "409949833300-4um6n4jv565id87o2t4k8uu6gm7kcdfu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtMwMvMKighKwahuMdm_zzDIcpAxlzl30"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "409949833300-4um6n4jv565id87o2t4k8uu6gm7kcdfu.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "409949833300-235ur8pi2u6had6134kc18vbcdqds2l4.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "nd.demo.swiftui.fbdemo"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:409949833300:android:93edee912335c0c77105c1",
+        "android_client_info": {
+          "package_name": "nd.imagevideo.filters"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "409949833300-4um6n4jv565id87o2t4k8uu6gm7kcdfu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtMwMvMKighKwahuMdm_zzDIcpAxlzl30"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "409949833300-4um6n4jv565id87o2t4k8uu6gm7kcdfu.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "409949833300-235ur8pi2u6had6134kc18vbcdqds2l4.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "nd.demo.swiftui.fbdemo"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
