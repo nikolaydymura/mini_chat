@@ -18,18 +18,51 @@ import 'package:mini_chat/pages/user_profile_page.dart' as _i4;
 
 /// generated route for
 /// [_i1.ChatPage]
-class ChatRoute extends _i5.PageRouteInfo<void> {
-  const ChatRoute({List<_i5.PageRouteInfo>? children})
-    : super(ChatRoute.name, initialChildren: children);
+class ChatRoute extends _i5.PageRouteInfo<ChatRouteArgs> {
+  ChatRoute({
+    _i6.Key? key,
+    required String receiverId,
+    List<_i5.PageRouteInfo>? children,
+  }) : super(
+         ChatRoute.name,
+         args: ChatRouteArgs(key: key, receiverId: receiverId),
+         initialChildren: children,
+       );
 
   static const String name = 'ChatRoute';
 
   static _i5.PageInfo page = _i5.PageInfo(
     name,
     builder: (data) {
-      return _i5.WrappedRoute(child: const _i1.ChatPage());
+      final args = data.argsAs<ChatRouteArgs>();
+      return _i5.WrappedRoute(
+        child: _i1.ChatPage(key: args.key, receiverId: args.receiverId),
+      );
     },
   );
+}
+
+class ChatRouteArgs {
+  const ChatRouteArgs({this.key, required this.receiverId});
+
+  final _i6.Key? key;
+
+  final String receiverId;
+
+  @override
+  String toString() {
+    return 'ChatRouteArgs{key: $key, receiverId: $receiverId}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! ChatRouteArgs) return false;
+    return key == other.key && receiverId == other.receiverId;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ receiverId.hashCode;
 }
 
 /// generated route for

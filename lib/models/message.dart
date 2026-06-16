@@ -7,7 +7,7 @@ part 'message.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class Message {
-  @JsonKey(name: 'id', includeToJson: false)
+  @JsonKey(name: 'id', includeToJson: false, defaultValue: '')
   final String id;
   @JsonKey(name: 'content')
   final String? content;
@@ -15,14 +15,12 @@ class Message {
   final List<Attachment>? attachments;
   @JsonKey(name: 'sender_id')
   final String senderId;
-  @JsonKey(name: 'receiver_id')
-  final String receiverId;
   @JsonKey(
     name: 'created_at',
     fromJson: FirestoreModelUtils.fromTimestamp,
     toJson: FirestoreModelUtils.toTimestamp,
   )
-  final DateTime createdAt;
+  final DateTime? createdAt;
   @JsonKey(
     name: 'delivered_at',
     fromJson: FirestoreModelUtils.fromTimestamp,
@@ -35,7 +33,6 @@ class Message {
     this.content,
     this.attachments,
     required this.senderId,
-    required this.receiverId,
     required this.createdAt,
     this.deliveredAt,
   });

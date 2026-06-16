@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -12,29 +14,44 @@ import '../dialogs_cubit/dialogs_cubit.dart';
 import '../user_cubit/user_cubit.dart';
 import 'messages_state.dart';
 
-@lazySingleton
+@injectable
 class MessagesCubit extends Cubit<MessagesState> {
   MessagesCubit() : super(const MessagesState());
+  late final String receiverId;
 
-  Future<void> loadMessages() async {
+  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>?
+  _messagesSubscription;
+
+  late final chatId = [
+    registry.get<UserCubit>().state.userProfile?.userId,
+    receiverId,
+  ].nonNulls.sorted((a, b) => a.compareTo(b)).join('_');
+
+  void loadMessages(String receiverId) {
+    this.receiverId = receiverId;
     emit(state.copyWith(isLoading: true));
 
-    final loadedMessages = await registry
+    _messagesSubscription = registry
         .get<FirebaseFirestore>()
+        .collection('conversations')
+        .doc(chatId)
         .collection('messages')
-        .where(
-          'sender_id',
-          isEqualTo: registry.get<UserCubit>().state.userProfile?.userId,
-        )
-        .where('receiver_id', isEqualTo: 'prp5BP2cyResnc0nWxAJuJDXjXl1')
         .orderBy('created_at', descending: true)
         .limit(10)
-        .get();
-    final documents = loadedMessages.docs;
-    final messages = documents
-        .map((doc) => Message.fromJson({...doc.data(), 'id': doc.id}))
-        .toList();
-    emit(state.copyWith(messages: messages, isLoading: false));
+        .snapshots()
+        .listen((change) {
+          final documents = change.docs;
+          final messages = documents
+              .map((doc) => Message.fromJson({...doc.data(), 'id': doc.id}))
+              .toList();
+          emit(state.copyWith(messages: messages, isLoading: false));
+        });
+  }
+
+  @override
+  Future<void> close() {
+    _messagesSubscription?.cancel();
+    return super.close();
   }
 
   void addMessage(String? content, List<File>? attachments) async {
@@ -44,24 +61,22 @@ class MessagesCubit extends Cubit<MessagesState> {
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       content: content,
       senderId: senderId!,
-      receiverId: 'prp5BP2cyResnc0nWxAJuJDXjXl1',
       attachments: uploadedAttachments,
       createdAt: DateTime.now(),
     );
-    final doc = await registry
+    await registry
         .get<FirebaseFirestore>()
+        .collection('conversations')
+        .doc(chatId)
         .collection('messages')
         .add({
           ...newMessage.toJson(),
           'delivered_at': FieldValue.serverTimestamp(),
         });
-    final messageDoc = await doc.get();
-    final serverMessage = Message.fromJson({
-      ...?messageDoc.data(),
-      'id': messageDoc.id,
-    });
-    emit(state.copyWith(messages: [...state.messages, serverMessage]));
-    await registry.get<DialogsCubit>().updateConversation(serverMessage);
+    await registry.get<DialogsCubit>().updateConversation(
+      'prp5BP2cyResnc0nWxAJuJDXjXl1',
+      newMessage,
+    );
   }
 
   Future<List<Attachment>?> uploadAttachments(List<File>? attachments) async {

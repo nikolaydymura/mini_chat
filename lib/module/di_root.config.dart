@@ -31,8 +31,8 @@ extension GetItInjectableX on _i174.GetIt {
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final appModule = _$AppModule();
+    gh.factory<_i442.MessagesCubit>(() => _i442.MessagesCubit());
     gh.lazySingleton<_i899.DialogsCubit>(() => _i899.DialogsCubit());
-    gh.lazySingleton<_i442.MessagesCubit>(() => _i442.MessagesCubit());
     gh.lazySingleton<_i996.UserCubit>(() => _i996.UserCubit()..load());
     gh.lazySingleton<_i59.FirebaseAuth>(() => appModule.firebaseAuth);
     gh.lazySingleton<_i974.FirebaseFirestore>(

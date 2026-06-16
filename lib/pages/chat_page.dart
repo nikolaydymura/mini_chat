@@ -6,11 +6,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../cubits/messages_cubit/messages_cubit.dart';
+import '../cubits/user_cubit/user_cubit.dart';
 import '../module/di_root.dart';
 
 @RoutePage()
 class ChatPage extends StatefulWidget implements AutoRouteWrapper {
-  const ChatPage({super.key});
+  const ChatPage({super.key, required this.receiverId});
+
+  final String receiverId;
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -18,7 +21,7 @@ class ChatPage extends StatefulWidget implements AutoRouteWrapper {
   @override
   Widget wrappedRoute(BuildContext context) {
     return BlocProvider.value(
-      value: registry.get<MessagesCubit>()..loadMessages(),
+      value: registry.get<MessagesCubit>()..loadMessages(receiverId),
       child: this,
     );
   }
@@ -43,7 +46,19 @@ class _ChatPageState extends State<ChatPage> {
                     reverse: true,
                     itemBuilder: (context, index) {
                       final message = messagesState.messages[index];
-                      return ListTile(title: Text(message.content ?? ''));
+                      final isMine =
+                          message.senderId ==
+                          registry.get<UserCubit>().state.userProfile?.userId;
+                      return ListTile(
+                        title: Text(
+                          message.content ?? '',
+                          style: TextStyle(
+                            fontWeight: isMine
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                          ),
+                        ),
+                      );
                     },
                   ),
           ),

@@ -7,16 +7,17 @@ part of 'message.dart';
 // **************************************************************************
 
 Message _$MessageFromJson(Map<String, dynamic> json) => Message(
-  id: json['id'] as String,
+  id: json['id'] as String? ?? '',
   content: json['content'] as String?,
   attachments: (json['attachments'] as List<dynamic>?)
       ?.map((e) => Attachment.fromJson(e as Map<String, dynamic>))
       .toList(),
   senderId: json['sender_id'] as String,
-  receiverId: json['receiver_id'] as String,
-  createdAt: FirestoreModelUtils.fromTimestamp(json['created_at'] as Timestamp),
+  createdAt: FirestoreModelUtils.fromTimestamp(
+    json['created_at'] as Timestamp?,
+  ),
   deliveredAt: FirestoreModelUtils.fromTimestamp(
-    json['delivered_at'] as Timestamp,
+    json['delivered_at'] as Timestamp?,
   ),
 );
 
@@ -24,7 +25,6 @@ Map<String, dynamic> _$MessageToJson(Message instance) => <String, dynamic>{
   'content': instance.content,
   'attachments': instance.attachments?.map((e) => e.toJson()).toList(),
   'sender_id': instance.senderId,
-  'receiver_id': instance.receiverId,
   'created_at': FirestoreModelUtils.toTimestamp(instance.createdAt),
   'delivered_at': FirestoreModelUtils.toTimestamp(instance.deliveredAt),
 };
