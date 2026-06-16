@@ -11,8 +11,6 @@ class Conversation {
   final String id;
   @JsonKey(name: 'peoples_ids')
   final List<String> peopleIds;
-  @JsonKey(name: 'recipient')
-  final UserProfile recipient;
   @JsonKey(name: 'sender')
   final UserProfile sender;
   @JsonKey(name: 'last_message')
@@ -20,7 +18,6 @@ class Conversation {
 
   Conversation({
     required this.id,
-    required this.recipient,
     required this.sender,
     required this.lastMessage,
     required this.peopleIds,

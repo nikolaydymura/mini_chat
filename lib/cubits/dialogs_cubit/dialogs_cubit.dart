@@ -7,7 +7,6 @@ import 'package:injectable/injectable.dart';
 
 import '../../models/conversation.dart';
 import '../../models/message.dart';
-import '../../models/user_profile.dart';
 import '../../module/di_root.dart';
 import '../user_cubit/user_cubit.dart';
 import 'dialogs_state.dart';
@@ -46,19 +45,9 @@ class DialogsCubit extends Cubit<DialogsState> {
   Future<void> updateConversation(String receiverId, Message message) async {
     final senderId = message.senderId;
     final senderProfile = registry.get<UserCubit>().state.userProfile;
-    final receiverProfile = await registry
-        .get<FirebaseFirestore>()
-        .collection('profiles')
-        .doc(receiverId)
-        .get();
-    final receiver = UserProfile.fromJson({
-      ...?receiverProfile.data(),
-      'user_id': receiverProfile.id,
-    });
     final conversation = Conversation(
       id: '',
       peopleIds: [senderId, receiverId],
-      recipient: receiver,
       sender: senderProfile!,
       lastMessage: message,
     );
