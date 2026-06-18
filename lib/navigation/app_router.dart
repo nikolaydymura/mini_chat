@@ -16,6 +16,7 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: HomeRoute.page, initial: true, guards: [_AuthGuard()]),
     AutoRoute(page: UserProfileRoute.page),
     AutoRoute(page: ChatRoute.page),
+    AutoRoute(page: PeopleRoute.page),
   ];
 
   void logout() {

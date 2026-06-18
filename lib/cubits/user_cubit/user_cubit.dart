@@ -57,11 +57,10 @@ class UserCubit extends Cubit<UserState> {
   void updateProfile({String? firstName, String? lastName, DateTime? dateOfBirth}) async {
     final user = UserProfile(firstName: firstName, lastName: lastName, dateOfBirth: dateOfBirth);
     final userId = registry.get<FirebaseAuth>().currentUser!.uid;
-    await registry
-        .get<FirebaseFirestore>()
-        .collection('profiles')
-        .doc(userId)
-        .set(user.toJson(), SetOptions(merge: true));
+    await registry.get<FirebaseFirestore>().collection('profiles').doc(userId).set({
+      ...user.toJson(),
+      'names': [user.firstName?.toLowerCase(), user.lastName?.toLowerCase()].nonNulls.toList(),
+    }, SetOptions(merge: true));
     emit(state.copyWith(userProfile: user));
   }
 

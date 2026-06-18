@@ -9,139 +9,156 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:auto_route/auto_route.dart' as _i5;
-import 'package:flutter/material.dart' as _i6;
+import 'package:auto_route/auto_route.dart' as _i6;
+import 'package:flutter/material.dart' as _i7;
 import 'package:mini_chat/pages/chat_page.dart' as _i1;
 import 'package:mini_chat/pages/home_page.dart' as _i2;
 import 'package:mini_chat/pages/login_page.dart' as _i3;
-import 'package:mini_chat/pages/user_profile_page.dart' as _i4;
+import 'package:mini_chat/pages/people_page.dart' as _i4;
+import 'package:mini_chat/pages/user_profile_page.dart' as _i5;
 
 /// generated route for
 /// [_i1.ChatPage]
-class ChatRoute extends _i5.PageRouteInfo<ChatRouteArgs> {
+class ChatRoute extends _i6.PageRouteInfo<ChatRouteArgs> {
   ChatRoute({
-    _i6.Key? key,
     required String receiverId,
-    List<_i5.PageRouteInfo>? children,
+    _i7.Key? key,
+    List<_i6.PageRouteInfo>? children,
   }) : super(
          ChatRoute.name,
-         args: ChatRouteArgs(key: key, receiverId: receiverId),
+         args: ChatRouteArgs(receiverId: receiverId, key: key),
          initialChildren: children,
        );
 
   static const String name = 'ChatRoute';
 
-  static _i5.PageInfo page = _i5.PageInfo(
+  static _i6.PageInfo page = _i6.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<ChatRouteArgs>();
-      return _i5.WrappedRoute(
-        child: _i1.ChatPage(key: args.key, receiverId: args.receiverId),
+      return _i6.WrappedRoute(
+        child: _i1.ChatPage(receiverId: args.receiverId, key: args.key),
       );
     },
   );
 }
 
 class ChatRouteArgs {
-  const ChatRouteArgs({this.key, required this.receiverId});
-
-  final _i6.Key? key;
+  const ChatRouteArgs({required this.receiverId, this.key});
 
   final String receiverId;
 
+  final _i7.Key? key;
+
   @override
   String toString() {
-    return 'ChatRouteArgs{key: $key, receiverId: $receiverId}';
+    return 'ChatRouteArgs{receiverId: $receiverId, key: $key}';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! ChatRouteArgs) return false;
-    return key == other.key && receiverId == other.receiverId;
+    return receiverId == other.receiverId && key == other.key;
   }
 
   @override
-  int get hashCode => key.hashCode ^ receiverId.hashCode;
+  int get hashCode => receiverId.hashCode ^ key.hashCode;
 }
 
 /// generated route for
 /// [_i2.HomePage]
-class HomeRoute extends _i5.PageRouteInfo<void> {
-  const HomeRoute({List<_i5.PageRouteInfo>? children})
+class HomeRoute extends _i6.PageRouteInfo<void> {
+  const HomeRoute({List<_i6.PageRouteInfo>? children})
     : super(HomeRoute.name, initialChildren: children);
 
   static const String name = 'HomeRoute';
 
-  static _i5.PageInfo page = _i5.PageInfo(
+  static _i6.PageInfo page = _i6.PageInfo(
     name,
     builder: (data) {
-      return _i5.WrappedRoute(child: const _i2.HomePage());
+      return _i6.WrappedRoute(child: const _i2.HomePage());
     },
   );
 }
 
 /// generated route for
 /// [_i3.LoginPage]
-class LoginRoute extends _i5.PageRouteInfo<LoginRouteArgs> {
+class LoginRoute extends _i6.PageRouteInfo<LoginRouteArgs> {
   LoginRoute({
-    _i6.Key? key,
-    required _i6.VoidCallback onContinue,
-    List<_i5.PageRouteInfo>? children,
+    required _i7.VoidCallback onContinue,
+    _i7.Key? key,
+    List<_i6.PageRouteInfo>? children,
   }) : super(
          LoginRoute.name,
-         args: LoginRouteArgs(key: key, onContinue: onContinue),
+         args: LoginRouteArgs(onContinue: onContinue, key: key),
          initialChildren: children,
        );
 
   static const String name = 'LoginRoute';
 
-  static _i5.PageInfo page = _i5.PageInfo(
+  static _i6.PageInfo page = _i6.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<LoginRouteArgs>();
-      return _i5.WrappedRoute(
-        child: _i3.LoginPage(key: args.key, onContinue: args.onContinue),
+      return _i6.WrappedRoute(
+        child: _i3.LoginPage(onContinue: args.onContinue, key: args.key),
       );
     },
   );
 }
 
 class LoginRouteArgs {
-  const LoginRouteArgs({this.key, required this.onContinue});
+  const LoginRouteArgs({required this.onContinue, this.key});
 
-  final _i6.Key? key;
+  final _i7.VoidCallback onContinue;
 
-  final _i6.VoidCallback onContinue;
+  final _i7.Key? key;
 
   @override
   String toString() {
-    return 'LoginRouteArgs{key: $key, onContinue: $onContinue}';
+    return 'LoginRouteArgs{onContinue: $onContinue, key: $key}';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! LoginRouteArgs) return false;
-    return key == other.key && onContinue == other.onContinue;
+    return onContinue == other.onContinue && key == other.key;
   }
 
   @override
-  int get hashCode => key.hashCode ^ onContinue.hashCode;
+  int get hashCode => onContinue.hashCode ^ key.hashCode;
 }
 
 /// generated route for
-/// [_i4.UserProfilePage]
-class UserProfileRoute extends _i5.PageRouteInfo<void> {
-  const UserProfileRoute({List<_i5.PageRouteInfo>? children})
+/// [_i4.PeoplePage]
+class PeopleRoute extends _i6.PageRouteInfo<void> {
+  const PeopleRoute({List<_i6.PageRouteInfo>? children})
+    : super(PeopleRoute.name, initialChildren: children);
+
+  static const String name = 'PeopleRoute';
+
+  static _i6.PageInfo page = _i6.PageInfo(
+    name,
+    builder: (data) {
+      return _i6.WrappedRoute(child: const _i4.PeoplePage());
+    },
+  );
+}
+
+/// generated route for
+/// [_i5.UserProfilePage]
+class UserProfileRoute extends _i6.PageRouteInfo<void> {
+  const UserProfileRoute({List<_i6.PageRouteInfo>? children})
     : super(UserProfileRoute.name, initialChildren: children);
 
   static const String name = 'UserProfileRoute';
 
-  static _i5.PageInfo page = _i5.PageInfo(
+  static _i6.PageInfo page = _i6.PageInfo(
     name,
     builder: (data) {
-      return _i5.WrappedRoute(child: const _i4.UserProfilePage());
+      return _i6.WrappedRoute(child: const _i5.UserProfilePage());
     },
   );
 }

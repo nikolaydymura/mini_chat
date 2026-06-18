@@ -19,6 +19,7 @@ import 'package:injectable/injectable.dart' as _i526;
 
 import '../cubits/dialogs_cubit/dialogs_cubit.dart' as _i899;
 import '../cubits/messages_cubit/messages_cubit.dart' as _i442;
+import '../cubits/people_cubit/people_cubit.dart' as _i160;
 import '../cubits/user_cubit/user_cubit.dart' as _i996;
 import '../navigation/app_router.dart' as _i630;
 import 'di_root.dart' as _i375;
@@ -32,6 +33,7 @@ extension GetItInjectableX on _i174.GetIt {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final appModule = _$AppModule();
     gh.factory<_i442.MessagesCubit>(() => _i442.MessagesCubit());
+    gh.factory<_i160.PeopleCubit>(() => _i160.PeopleCubit());
     gh.lazySingleton<_i899.DialogsCubit>(() => _i899.DialogsCubit());
     gh.lazySingleton<_i996.UserCubit>(() => _i996.UserCubit()..load());
     gh.lazySingleton<_i59.FirebaseAuth>(() => appModule.firebaseAuth);

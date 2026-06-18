@@ -64,8 +64,11 @@ class HomePage extends StatelessWidget implements AutoRouteWrapper {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          context.pushRoute(ChatRoute(receiverId: 'prp5BP2cyResnc0nWxAJuJDXjXl1'));
+        onPressed: () async {
+          final opponentId = await context.pushRoute<String>(const PeopleRoute());
+          if (opponentId != null) {
+            await context.pushRoute(ChatRoute(receiverId: opponentId));
+          }
         },
         child: const Icon(Icons.add),
       ),
