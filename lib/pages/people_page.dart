@@ -54,6 +54,9 @@ class _PeoplePageState extends State<PeoplePage> {
                   : ListView.builder(
                       itemCount: itemsCount,
                       itemBuilder: (context, index) {
+                        if (index >= peopleState.users.length - 5) {
+                          context.read<PeopleCubit>().loadMoreIfNeeded();
+                        }
                         if (index >= peopleState.users.length) {
                           return const Padding(
                             padding: EdgeInsets.symmetric(vertical: 16),

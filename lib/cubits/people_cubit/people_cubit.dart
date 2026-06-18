@@ -37,6 +37,7 @@ class PeopleCubit extends Cubit<PeopleState> {
     }
   }
 
+  // debounce / throttle
   void searchUsers(String text) async {
     emit(state.copyWith(isLoading: true, isLoadingMore: false, searchTerm: text));
     final result = await registry
