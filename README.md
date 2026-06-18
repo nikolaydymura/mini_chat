@@ -21,3 +21,19 @@ samples, guidance on mobile development, and a full API reference.
 ```bash
 flutter pub run build_runner build --delete-conflicting-outputs
 ```
+
+```bash
+keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android
+```
+
+```bash
+keytool -list -v -keystore ./android/upload-keystore.jks -alias upload -storepass upload -keypass upload
+```
+
+```bash
+base64 -i ./android/upload-keystore.jks
+```
+
+```bash
+base64 -i Cerificates.p12
+```
