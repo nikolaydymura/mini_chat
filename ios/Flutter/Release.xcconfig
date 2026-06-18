@@ -1,2 +1,16 @@
 #include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"
 #include "Generated.xcconfig"
+
+PRODUCT_BUNDLE_IDENTIFIER=com.mini-chat.app.mini-chat
+APP_DISPLAY_NAME=Mini Chat
+DEVELOPMENT_TEAM=8MJN994E42
+IPHONEOS_DEPLOYMENT_TARGET=18.0.0
+// CODE_SIGN_ENTITLEMENTS=Runner/RunnerRelease.entitlements TODO: add entitlements for release build if needed
+
+CODE_SIGN_STYLE=Manual
+CODE_SIGN_IDENTITY=Apple Distribution: Mykola Dymura (8MJN994E42)
+
+APP_BUNDLE_NAME=app_release_adhoc
+PROVISIONING_PROFILE_SPECIFIER=mini-chat-adhoc
+APP_BUNDLE_NAME=app_release
+PROVISIONING_PROFILE_SPECIFIER=mini-chat-appstore

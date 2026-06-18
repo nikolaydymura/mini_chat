@@ -118,40 +118,112 @@ jobs:
         continue-on-error: true
         name: Uploading Android artifact to Google Play Store
 
+  build_ios_flutter_app:
+    name: Build iOS application using Flutter
+    runs-on: macos-26
+    timeout-minutes: 20
+    needs: [ analyze_flutter_app ]
+    steps:
+      - uses: actions/checkout@v6
+        name: Downloading sources
+      - uses: subosito/flutter-action@v2
+        name: Preparing Flutter SDK
+        with:
+          flutter-version: ${{ vars.FLUTTER_VERSION }}
+          channel: 'stable'
+      - run: |
+          echo "${{ vars.FIREBASE_OPTIONS_DART }}" > lib/firebase_options.dart
+          echo '${{ vars.GOOGLE_SERVICES_PLIST }}' > ios/Runner/GoogleService-Info.plist
+        name: Copy Missed files # TODO Remove for private repositories
+      - uses: actions/cache@v4
+        with:
+          path: ios/Pods
+          key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
+      - name: Download Provisioning Profiles
+        uses: apple-actions/download-provisioning-profiles@v4
+        continue-on-error: true
+        with:
+          bundle-id: ${{ vars.BUNDLE_ID }}
+          profile-type: 'IOS_APP_STORE'
+          issuer-id: ${{ vars.APPSTORE_ISSUER_ID }}
+          api-key-id: ${{ vars.APPSTORE_KEY_ID }}
+          api-private-key: ${{ secrets.APPSTORE_KEY }}
+      - name: Download Provisioning Profiles
+        uses: apple-actions/download-provisioning-profiles@v4
+        continue-on-error: true
+        with:
+          bundle-id: ${{ vars.BUNDLE_ID }}
+          profile-type: 'IOS_APP_ADHOC'
+          issuer-id: ${{ vars.APPSTORE_ISSUER_ID }}
+          api-key-id: ${{ vars.APPSTORE_KEY_ID }}
+          api-private-key: ${{ secrets.APPSTORE_KEY }}
+      - run: |
+          xcodebuild -version
+          #sudo xcode-select --switch /Applications/Xcode_26.app
+          xcodebuild -version
+          security create-keychain -p "" flutter-build.keychain
+          echo -n ${{ secrets.CERTIFICATE_BASE64 }} | base64 --decode -o ios/key.p12
+          security import ios/key.p12 -t agg -k ~/Library/Keychains/flutter-build.keychain -P "${{ secrets.CERTIFICATE_PASSWORD }}" -A
 
-#  deploy_ios_apps:
-#    name: Upload iOS artifact to Firebase App Distribution
-#    runs-on: ubuntu-latest
-#    needs: [ build_ios_flutter_app ]
-#    steps:
-#      - uses: actions/download-artifact@v6
-#        name: Download all workflow run artifacts
-#        with:
-#          name: ios-app-${{github.run_number}}-${{github.sha}}
-#          path: ./artifacts
-#      - uses: wzieba/Firebase-Distribution-Github-Action@v1
-#        name: Uploading iOS artifact to Firebase App Distribution
-#        with:
-#          appId: ${{ vars.FIREBASE_IOS_APP_ID }}
-#          serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_FILE_CONTENT }}
-#          groups: testers
-#          file: ./artifacts/app_release_adhoc.ipa
-#  publish_ios_apps:
-#    name: Publish artifact to AppStore Connect
-#    runs-on: macos-15
-#    needs: [ build_ios_flutter_app ]
-#    steps:
-#      - uses: actions/download-artifact@v6
-#        name: Download all workflow run artifacts
-#        with:
-#          name: ios-app-${{github.run_number}}-${{github.sha}}
-#          path: ./artifacts
-#      - run: |
-#          mkdir -p $(pwd)/private_keys
-#          echo "${{ secrets.APPSTORE_KEY }}" > $(pwd)/private_keys/AuthKey_${{ vars.APPSTORE_KEY_ID }}.p8
-#          xcrun altool --upload-app \
-#            --file ./artifacts/app_release_store.ipa \
-#            --type iOS \
-#            --apiIssuer ${{ vars.APPSTORE_ISSUER_ID }} \
-#            --apiKey ${{ vars.APPSTORE_KEY_ID }}
-#        name: Uploading iOS artifact to AppStore Connect
+          security list-keychains -s ~/Library/Keychains/flutter-build.keychain
+          security default-keychain -s ~/Library/Keychains/flutter-build.keychain
+          security unlock-keychain -p "" ~/Library/Keychains/flutter-build.keychain
+          security set-key-partition-list -S apple-tool:,apple: -s -k "" ~/Library/Keychains/flutter-build.keychain
+
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+
+          flutter build ipa --build-name=${{vars.MAJOR_VERSION}}.${{vars.MINOR_VERSION}}.${{github.run_number}} --build-number=${{github.run_number}} --export-options-plist=ios/export-store.plist
+          
+          # TODO: Remove this if you don't need to build an adhoc version of the app
+          echo '' >> ios/Flutter/Release.xcconfig
+          echo 'APP_BUNDLE_NAME=app_release_adhoc' >> ios/Flutter/Release.xcconfig
+          echo 'PROVISIONING_PROFILE_SPECIFIER=mini-chat-adhoc' >> ios/Flutter/Release.xcconfig
+          flutter build ipa --build-name=${{vars.MAJOR_VERSION}}.${{vars.MINOR_VERSION}}.${{github.run_number}} --build-number=${{github.run_number}} --export-options-plist=ios/export-adhoc.plist
+        name: Building application
+      - uses: actions/upload-artifact@v6
+        name: Archive artifacts
+        with:
+          name: ios-app-${{github.run_number}}-${{github.sha}}
+          path: |
+            build/ios/ipa/app_release.ipa
+            build/ios/ipa/app_release_adhoc.ipa
+          retention-days: 1
+
+  deploy_ios_apps:
+    name: Upload iOS artifact to Firebase App Distribution
+    runs-on: ubuntu-latest
+    needs: [ build_ios_flutter_app ]
+    steps:
+      - uses: actions/download-artifact@v6
+        name: Download all workflow run artifacts
+        with:
+          name: ios-app-${{github.run_number}}-${{github.sha}}
+          path: ./artifacts
+      - uses: wzieba/Firebase-Distribution-Github-Action@v1
+        name: Uploading iOS artifact to Firebase App Distribution
+        with:
+          appId: ${{ vars.FIREBASE_IOS_APP_ID }}
+          serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_FILE_CONTENT }}
+          groups: testers
+          file: ./artifacts/app_release_adhoc.ipa
+  publish_ios_apps:
+    name: Publish artifact to AppStore Connect
+    runs-on: macos-15
+    needs: [ build_ios_flutter_app ]
+    steps:
+      - uses: actions/download-artifact@v6
+        name: Download all workflow run artifacts
+        with:
+          name: ios-app-${{github.run_number}}-${{github.sha}}
+          path: ./artifacts
+      - run: |
+          mkdir -p $(pwd)/private_keys
+          echo "${{ secrets.APPSTORE_KEY }}" > $(pwd)/private_keys/AuthKey_${{ vars.APPSTORE_KEY_ID }}.p8
+          xcrun altool --upload-app \
+            --file ./artifacts/app_release.ipa \
+            --type iOS \
+            --apiIssuer ${{ vars.APPSTORE_ISSUER_ID }} \
+            --apiKey ${{ vars.APPSTORE_KEY_ID }}
+        name: Uploading iOS artifact to AppStore Connect
