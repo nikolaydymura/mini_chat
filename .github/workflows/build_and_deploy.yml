@@ -24,6 +24,7 @@ jobs:
       - run: |
           echo "${{ vars.FIREBASE_OPTIONS_DART }}" > lib/firebase_options.dart
           echo '${{ vars.GOOGLE_SERVICES_JSON }}' > android/app/google-services.json
+          dart format lib/firebase_options.dart
         name: Copy Missed files (Remove for private repositories)
       - run: flutter analyze lib
         name: Analyzing sources
