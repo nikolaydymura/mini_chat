@@ -22,10 +22,7 @@ class DialogsCubit extends Cubit<DialogsState> {
     _dialogsSubscription = registry
         .get<FirebaseFirestore>()
         .collection('conversations')
-        .where(
-          'people_ids',
-          arrayContains: registry.get<UserCubit>().state.userProfile?.userId,
-        )
+        .where('people_ids', arrayContains: registry.get<UserCubit>().state.userProfile?.userId)
         .snapshots()
         .listen((changes) {
           final conversations = changes.docs
@@ -52,10 +49,7 @@ class DialogsCubit extends Cubit<DialogsState> {
       lastMessage: message,
     );
 
-    final chatId = [
-      senderId,
-      receiverId,
-    ].nonNulls.sorted((a, b) => a.compareTo(b)).join('_');
+    final chatId = [senderId, receiverId].nonNulls.sorted((a, b) => a.compareTo(b)).join('_');
 
     await registry
         .get<FirebaseFirestore>()

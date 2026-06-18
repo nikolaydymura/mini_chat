@@ -5,6 +5,9 @@ part 'user_profile.g.dart';
 
 @JsonSerializable()
 class UserProfile extends Equatable {
+  const UserProfile({this.userId, this.firstName, this.lastName, this.dateOfBirth, this.photoUrl});
+
+  factory UserProfile.fromJson(Map<String, dynamic> json) => _$UserProfileFromJson(json);
   @JsonKey(name: 'user_id', includeFromJson: false, includeToJson: false)
   final String? userId;
   @JsonKey(name: 'first_name')
@@ -16,27 +19,10 @@ class UserProfile extends Equatable {
   @JsonKey(name: 'photo_url')
   final String? photoUrl;
 
-  const UserProfile({
-    this.userId,
-    this.firstName,
-    this.lastName,
-    this.dateOfBirth,
-    this.photoUrl,
-  });
-
-  factory UserProfile.fromJson(Map<String, dynamic> json) =>
-      _$UserProfileFromJson(json);
-
   Map<String, dynamic> toJson() => _$UserProfileToJson(this);
 
   @override
-  List<Object?> get props => [
-    userId,
-    firstName,
-    lastName,
-    dateOfBirth,
-    photoUrl,
-  ];
+  List<Object?> get props => [userId, firstName, lastName, dateOfBirth, photoUrl];
 
   UserProfile copyWith({
     String? userId,

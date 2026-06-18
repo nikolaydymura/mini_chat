@@ -15,10 +15,9 @@ UserProfile _$UserProfileFromJson(Map<String, dynamic> json) => UserProfile(
   photoUrl: json['photo_url'] as String?,
 );
 
-Map<String, dynamic> _$UserProfileToJson(UserProfile instance) =>
-    <String, dynamic>{
-      'first_name': instance.firstName,
-      'last_name': instance.lastName,
-      'date_of_birth': instance.dateOfBirth?.toIso8601String(),
-      'photo_url': instance.photoUrl,
-    };
+Map<String, dynamic> _$UserProfileToJson(UserProfile instance) => <String, dynamic>{
+  'first_name': instance.firstName,
+  'last_name': instance.lastName,
+  'date_of_birth': instance.dateOfBirth?.toIso8601String(),
+  'photo_url': instance.photoUrl,
+};

@@ -7,6 +7,16 @@ part 'message.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class Message {
+  Message({
+    required this.id,
+    required this.senderId,
+    required this.createdAt,
+    this.content,
+    this.attachments,
+    this.deliveredAt,
+  });
+
+  factory Message.fromJson(Map<String, dynamic> json) => _$MessageFromJson(json);
   @JsonKey(name: 'id', includeToJson: false, defaultValue: '')
   final String id;
   @JsonKey(name: 'content')
@@ -28,34 +38,20 @@ class Message {
   )
   final DateTime? deliveredAt;
 
-  Message({
-    required this.id,
-    this.content,
-    this.attachments,
-    required this.senderId,
-    required this.createdAt,
-    this.deliveredAt,
-  });
-
-  factory Message.fromJson(Map<String, dynamic> json) =>
-      _$MessageFromJson(json);
-
   Map<String, dynamic> toJson() => _$MessageToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
 class Attachment {
+  Attachment({required this.id, required this.url, required this.type});
+
+  factory Attachment.fromJson(Map<String, dynamic> json) => _$AttachmentFromJson(json);
   @JsonKey(name: 'id')
   final String id;
   @JsonKey(name: 'url')
   final String url;
   @JsonKey(name: 'type')
   final String type;
-
-  Attachment({required this.id, required this.url, required this.type});
-
-  factory Attachment.fromJson(Map<String, dynamic> json) =>
-      _$AttachmentFromJson(json);
 
   Map<String, dynamic> toJson() => _$AttachmentToJson(this);
 }

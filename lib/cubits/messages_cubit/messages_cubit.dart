@@ -19,8 +19,7 @@ class MessagesCubit extends Cubit<MessagesState> {
   MessagesCubit() : super(const MessagesState());
   late final String receiverId;
 
-  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>?
-  _messagesSubscription;
+  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? _messagesSubscription;
 
   late final chatId = [
     registry.get<UserCubit>().state.userProfile?.userId,
@@ -69,10 +68,7 @@ class MessagesCubit extends Cubit<MessagesState> {
         .collection('conversations')
         .doc(chatId)
         .collection('messages')
-        .add({
-          ...newMessage.toJson(),
-          'delivered_at': FieldValue.serverTimestamp(),
-        });
+        .add({...newMessage.toJson(), 'delivered_at': FieldValue.serverTimestamp()});
     await registry.get<DialogsCubit>().updateConversation(
       'prp5BP2cyResnc0nWxAJuJDXjXl1',
       newMessage,
@@ -85,7 +81,7 @@ class MessagesCubit extends Cubit<MessagesState> {
     final uploadedAttachments = <Attachment>[];
 
     for (final file in attachments) {
-      final id = Uuid().v4();
+      final id = const Uuid().v4();
       final ref = storage.ref('messagesAttachments').child(id);
       await ref.putFile(file);
       final url =

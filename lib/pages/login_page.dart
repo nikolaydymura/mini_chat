@@ -7,7 +7,7 @@ import '../module/di_root.dart';
 
 @RoutePage()
 class LoginPage extends StatefulWidget implements AutoRouteWrapper {
-  const LoginPage({super.key, required this.onContinue});
+  const LoginPage({required this.onContinue, super.key});
 
   final VoidCallback onContinue;
 
@@ -57,20 +57,17 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (_errorMessage != null) ...[
-              Text(_errorMessage!, style: TextStyle(color: Colors.red)),
-              SizedBox(height: 16),
+              Text(_errorMessage!, style: const TextStyle(color: Colors.red)),
+              const SizedBox(height: 16),
             ],
             TextField(
               controller: _emailController,
-              decoration: InputDecoration(
-                labelText: 'Email',
-                hintText: 'Type your email',
-              ),
+              decoration: const InputDecoration(labelText: 'Email', hintText: 'Type your email'),
             ),
             TextField(
               controller: _passwordController,
               obscureText: true,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Password',
                 hintText: 'Type your password',
               ),
@@ -79,20 +76,16 @@ class _LoginPageState extends State<LoginPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 TextButton(
-                  onPressed: _loginEnabled && !_signInBusy
-                      ? _signInClicked
-                      : null,
+                  onPressed: _loginEnabled && !_signInBusy ? _signInClicked : null,
                   child: _signInBusy
-                      ? CircularProgressIndicator.adaptive()
-                      : Text('Sing In'),
+                      ? const CircularProgressIndicator.adaptive()
+                      : const Text('Sing In'),
                 ),
                 TextButton(
-                  onPressed: _loginEnabled && !_signUpBusy
-                      ? _signUpClicked
-                      : null,
+                  onPressed: _loginEnabled && !_signUpBusy ? _signUpClicked : null,
                   child: _signUpBusy
-                      ? CircularProgressIndicator.adaptive()
-                      : Text('Sing Up'),
+                      ? const CircularProgressIndicator.adaptive()
+                      : const Text('Sing Up'),
                 ),
               ],
             ),
@@ -107,10 +100,7 @@ class _LoginPageState extends State<LoginPage> {
       _signInBusy = true;
     });
     try {
-      await context.read<UserCubit>().signIn(
-        _emailController.text,
-        _passwordController.text,
-      );
+      await context.read<UserCubit>().signIn(_emailController.text, _passwordController.text);
       widget.onContinue();
     } catch (e, trace) {
       debugPrint('Error during sign up: $e');
@@ -129,10 +119,7 @@ class _LoginPageState extends State<LoginPage> {
       _signUpBusy = true;
     });
     try {
-      await context.read<UserCubit>().signUp(
-        _emailController.text,
-        _passwordController.text,
-      );
+      await context.read<UserCubit>().signUp(_emailController.text, _passwordController.text);
       widget.onContinue();
     } catch (e, trace) {
       debugPrint('Error during sign up: $e');

@@ -28,13 +28,13 @@ class HomePage extends StatelessWidget implements AutoRouteWrapper {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text('Home'),
+        title: const Text('Home'),
         actions: [
           IconButton(
             onPressed: () {
-              context.pushRoute(UserProfileRoute());
+              context.pushRoute(const UserProfileRoute());
             },
-            icon: Icon(Icons.account_circle),
+            icon: const Icon(Icons.account_circle),
           ),
         ],
       ),
@@ -42,7 +42,7 @@ class HomePage extends StatelessWidget implements AutoRouteWrapper {
         children: [
           Expanded(
             child: dialogsState.isLoading
-                ? Center(child: CircularProgressIndicator())
+                ? const Center(child: CircularProgressIndicator())
                 : ListView.builder(
                     itemCount: dialogsState.conversations.length,
                     itemBuilder: (context, index) {
@@ -51,11 +51,7 @@ class HomePage extends StatelessWidget implements AutoRouteWrapper {
                       return ListTile(
                         title: Text(message.lastMessage.content ?? ''),
                         onTap: () {
-                          final currentUserId = registry
-                              .get<UserCubit>()
-                              .state
-                              .userProfile
-                              ?.userId;
+                          final currentUserId = registry.get<UserCubit>().state.userProfile?.userId;
                           final otherUserId = message.peopleIds
                               .where((id) => id != currentUserId)
                               .first;
@@ -69,11 +65,9 @@ class HomePage extends StatelessWidget implements AutoRouteWrapper {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          context.pushRoute(
-            ChatRoute(receiverId: 'prp5BP2cyResnc0nWxAJuJDXjXl1'),
-          );
+          context.pushRoute(ChatRoute(receiverId: 'prp5BP2cyResnc0nWxAJuJDXjXl1'));
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }

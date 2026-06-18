@@ -21,11 +21,36 @@ linter:
   # `// ignore_for_file: name_of_lint` syntax on the line or in the file
   # producing the lint.
   rules:
+    avoid_print: true
     prefer_single_quotes: true
+    require_trailing_commas: true
     prefer_relative_imports: true
+    prefer_const_constructors: true
+    always_put_required_named_parameters_first: true
+    constant_identifier_names: true
     unawaited_futures: true
-    # avoid_print: false  # Uncomment to disable the `avoid_print` rule
-    # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
+    prefer_final_fields: true
+    prefer_final_in_for_each: true
+    sort_child_properties_last: true
+    sort_pub_dependencies: false
+    sort_constructors_first: true
+    omit_local_variable_types: true
+    use_build_context_synchronously: false
+
+formatter:
+  page_width: 100
+
+analyzer:
+  exclude:
+    - "**/*.mocks.dart"
+    - "**/*.freezed.dart"
+    - "**/*.gr.dart"
+    - "**/*.g.dart"
+    - "**/*.config.dart"
+    - "lib/l10n/intl/**"
+    - "lib/l10n/**"
+    - "**/.arb"
+    - "test/**"
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options

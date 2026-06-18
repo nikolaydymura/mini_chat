@@ -11,7 +11,7 @@ import '../module/di_root.dart';
 
 @RoutePage()
 class ChatPage extends StatefulWidget implements AutoRouteWrapper {
-  const ChatPage({super.key, required this.receiverId});
+  const ChatPage({required this.receiverId, super.key});
 
   final String receiverId;
 
@@ -35,27 +35,24 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     final messagesState = context.watch<MessagesCubit>().state;
     return Scaffold(
-      appBar: AppBar(title: Text('Chat')),
+      appBar: AppBar(title: const Text('Chat')),
       body: Column(
         children: [
           Expanded(
             child: messagesState.isLoading
-                ? Center(child: CircularProgressIndicator())
+                ? const Center(child: CircularProgressIndicator())
                 : ListView.builder(
                     itemCount: messagesState.messages.length,
                     reverse: true,
                     itemBuilder: (context, index) {
                       final message = messagesState.messages[index];
                       final isMine =
-                          message.senderId ==
-                          registry.get<UserCubit>().state.userProfile?.userId;
+                          message.senderId == registry.get<UserCubit>().state.userProfile?.userId;
                       return ListTile(
                         title: Text(
                           message.content ?? '',
                           style: TextStyle(
-                            fontWeight: isMine
-                                ? FontWeight.bold
-                                : FontWeight.normal,
+                            fontWeight: isMine ? FontWeight.bold : FontWeight.normal,
                           ),
                         ),
                       );
@@ -70,12 +67,10 @@ class _ChatPageState extends State<ChatPage> {
                 children: _attachments
                     .map(
                       (file) => Container(
-                        padding: EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(8),
                         child: Stack(
                           children: [
-                            Positioned.fill(
-                              child: Image.file(file, width: 64, height: 64),
-                            ),
+                            Positioned.fill(child: Image.file(file, width: 64, height: 64)),
                             Align(
                               alignment: .topRight,
                               child: IconButton(
@@ -84,7 +79,7 @@ class _ChatPageState extends State<ChatPage> {
                                     _attachments.remove(file);
                                   });
                                 },
-                                icon: Icon(Icons.delete),
+                                icon: const Icon(Icons.delete),
                               ),
                             ),
                           ],
@@ -97,7 +92,7 @@ class _ChatPageState extends State<ChatPage> {
           Row(
             children: [
               IconButton(
-                icon: Icon(Icons.attach_file),
+                icon: const Icon(Icons.attach_file),
                 onPressed: () async {
                   final files = await ImagePicker().pickMultiImage();
                   if (files.isNotEmpty) {
@@ -110,17 +105,15 @@ class _ChatPageState extends State<ChatPage> {
               Expanded(
                 child: TextField(
                   controller: _messageController,
-                  decoration: InputDecoration(hintText: 'Type a message'),
+                  decoration: const InputDecoration(hintText: 'Type a message'),
                 ),
               ),
               IconButton(
-                icon: Icon(Icons.send),
+                icon: const Icon(Icons.send),
                 onPressed: () async {
                   final message = _messageController.text.trim();
                   if (message.isNotEmpty || _attachments.isNotEmpty) {
-                    context.read<MessagesCubit>().addMessage(message, [
-                      ..._attachments,
-                    ]);
+                    context.read<MessagesCubit>().addMessage(message, [..._attachments]);
                   }
                   _messageController.clear();
                   setState(() {

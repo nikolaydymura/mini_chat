@@ -13,27 +13,19 @@ import 'user_state.dart';
 
 @LazySingleton()
 class UserCubit extends Cubit<UserState> {
-  UserCubit()
-    : super(
-        UserState(
-          isAuthenticated: registry.get<FirebaseAuth>().currentUser != null,
-        ),
-      );
+  UserCubit() : super(UserState(isAuthenticated: registry.get<FirebaseAuth>().currentUser != null));
 
   @postConstruct
   void load() async {
     final firebaseAuth = registry.get<FirebaseAuth>();
     final userId = firebaseAuth.currentUser?.uid;
     if (userId == null) {
-      emit(UserState());
+      emit(const UserState());
       return;
     }
     final firebaseFirestore = registry.get<FirebaseFirestore>();
 
-    final userDoc = await firebaseFirestore
-        .collection('profiles')
-        .doc(userId)
-        .get();
+    final userDoc = await firebaseFirestore.collection('profiles').doc(userId).get();
     if (userDoc.exists) {
       final userProfile = UserProfile.fromJson(userDoc.data() ?? {});
       emit(state.copyWith(userProfile: userProfile.copyWith(userId: userId)));
@@ -44,40 +36,26 @@ class UserCubit extends Cubit<UserState> {
 
   Future<void> signIn(String email, String password) async {
     final firebaseAuth = registry.get<FirebaseAuth>();
-    await firebaseAuth.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+    await firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
     emit(state.copyWith(isAuthenticated: true));
     load();
   }
 
   Future<void> signUp(String email, String password) async {
     final firebaseAuth = registry.get<FirebaseAuth>();
-    await firebaseAuth.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+    await firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
     emit(state.copyWith(isAuthenticated: true));
   }
 
   Future<void> logout() async {
     final firebaseAuth = registry.get<FirebaseAuth>();
     await firebaseAuth.signOut();
-    emit(UserState());
+    emit(const UserState());
     registry.get<AppRouter>().logout();
   }
 
-  void updateProfile({
-    String? firstName,
-    String? lastName,
-    DateTime? dateOfBirth,
-  }) async {
-    final user = UserProfile(
-      firstName: firstName,
-      lastName: lastName,
-      dateOfBirth: dateOfBirth,
-    );
+  void updateProfile({String? firstName, String? lastName, DateTime? dateOfBirth}) async {
+    final user = UserProfile(firstName: firstName, lastName: lastName, dateOfBirth: dateOfBirth);
     final userId = registry.get<FirebaseAuth>().currentUser!.uid;
     await registry
         .get<FirebaseFirestore>()

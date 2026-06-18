@@ -9,11 +9,7 @@ import 'di_root.config.dart';
 
 final registry = GetIt.instance;
 
-@InjectableInit(
-  initializerName: 'init',
-  preferRelativeImports: true,
-  asExtension: true,
-)
+@InjectableInit(initializerName: 'init', preferRelativeImports: true, asExtension: true)
 void configureDependencies() => registry.init();
 
 @module

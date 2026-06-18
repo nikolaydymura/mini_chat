@@ -1,0 +1,109 @@
+name: Build and Deploy Flutter application
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze_flutter_app:
+    name: Check Flutter sources
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        name: Downloading sources
+      - uses: subosito/flutter-action@v2
+        name: Preparing Flutter SDK
+        with:
+          flutter-version: ${{ vars.FLUTTER_VERSION }}
+          channel: 'stable'
+          cache: true
+      - run: flutter analyze lib
+        name: Analyzing sources
+      - run: dart format lib --set-exit-if-changed
+        name: Format sources
+  build_android_flutter_app:
+    name: Build Android application using Flutter
+    runs-on: ubuntu-latest
+    needs: [ analyze_flutter_app ]
+    steps:
+      - uses: actions/checkout@v6
+        name: Downloading sources
+      - uses: actions/setup-java@v5
+        name: Setup Java SDK
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+      - uses: subosito/flutter-action@v2
+        name: Preparing Flutter SDK
+        with:
+          flutter-version: ${{ vars.FLUTTER_VERSION }}
+          channel: 'stable'
+          cache: 'true'
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      - run: |
+          echo '${{ vars.KEYSTORE_BASE64 }}' | base64 --decode > android/key.jks
+          export KEYSTORE_PATH=$(pwd)/android/key.jks
+          export KEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}
+          export KEY_ALIAS=${{ vars.KEY_ALIAS }}
+          export KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}
+          
+          flutter build appbundle --build-name=${{vars.MAJOR_VERSION}}.${{vars.MINOR_VERSION}}.${{github.run_number}} --build-number=${{github.run_number}} --no-tree-shake-icons
+          flutter build apk --build-name=${{vars.MAJOR_VERSION}}.${{vars.MINOR_VERSION}}.${{github.run_number}} --build-number=${{github.run_number}} --no-tree-shake-icons
+        name: Building application
+        timeout-minutes: 20
+      - uses: actions/upload-artifact@v6
+        name: Archive production artifacts
+        with:
+          name: android-app-${{github.run_number}}-${{github.sha}}
+          path: |
+            build/app/outputs/flutter-apk/app-release.apk
+            build/app/outputs/bundle/release/app-release.aab
+          retention-days: 1
+  deploy_android_apps:
+    name: Upload Android artifact to Firebase App Distribution
+    runs-on: ubuntu-latest
+    needs: [ build_android_flutter_app ]
+    steps:
+      - uses: actions/download-artifact@v6
+        name: Download all workflow run artifacts
+        with:
+          name: android-app-${{github.run_number}}-${{github.sha}}
+          path: ./artifacts
+      - uses: wzieba/Firebase-Distribution-Github-Action@v1
+        name: Uploading Android artifact to Firebase App Distribution
+        with:
+          appId: ${{ vars.FIREBASE_ANDROID_APP_ID }}
+          serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_FILE_CONTENT }}
+          groups: testers
+          file: ./artifacts/flutter-apk/app-release.apk
+  publish_android_apps:
+    name: Publish artifact to Google Play Store
+    runs-on: ubuntu-latest
+    needs: [ build_android_flutter_app ]
+    steps:
+      - uses: actions/download-artifact@v6
+        name: Download all workflow run artifacts
+        with:
+          name: android-app-${{github.run_number}}-${{github.sha}}
+          path: ./artifacts
+      - uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_FILE_CONTENT }}
+          packageName: ${{ vars.PACKAGE_NAME }}
+          releaseFiles: ./artifacts/bundle/release/app-release.aab
+          track: internal
+        continue-on-error: true
+        name: Uploading Android artifact to Google Play Store

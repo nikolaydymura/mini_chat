@@ -16,10 +16,7 @@ class UserProfilePage extends StatefulWidget implements AutoRouteWrapper {
 
   @override
   Widget wrappedRoute(BuildContext context) {
-    return BlocProvider.value(
-      value: registry.get<UserCubit>()..load(),
-      child: this,
-    );
+    return BlocProvider.value(value: registry.get<UserCubit>()..load(), child: this);
   }
 }
 
@@ -52,10 +49,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('User Profile'),
+        title: const Text('User Profile'),
         actions: [
           IconButton(
-            icon: Icon(Icons.save),
+            icon: const Icon(Icons.save),
             onPressed: () {
               context.read<UserCubit>().updateProfile(
                 firstName: _firstNameController.text,
@@ -75,9 +72,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
               radius: 48,
               onTap: () async {
                 final picker = ImagePicker();
-                final XFile? image = await picker.pickImage(
-                  source: ImageSource.gallery,
-                );
+                final image = await picker.pickImage(source: ImageSource.gallery);
                 if (image != null) {
                   context.read<UserCubit>().updateProfilePhoto(image.path);
                 }
@@ -93,31 +88,31 @@ class _UserProfilePageState extends State<UserProfilePage> {
                           ?.substring(0, 1)
                           .toUpperCase() ??
                       '',
-                  style: TextStyle(fontSize: 32),
+                  style: const TextStyle(fontSize: 32),
                 ),
               ),
             ),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             TextField(
               controller: _firstNameController,
-              decoration: InputDecoration(labelText: 'First Name'),
+              decoration: const InputDecoration(labelText: 'First Name'),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             TextField(
               controller: _lastNameController,
-              decoration: InputDecoration(labelText: 'Last Name'),
+              decoration: const InputDecoration(labelText: 'Last Name'),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             TextField(
               controller: _dateOfBirthController,
-              decoration: InputDecoration(labelText: 'Date of Birth'),
+              decoration: const InputDecoration(labelText: 'Date of Birth'),
               readOnly: true,
               onTap: () async {
                 final newDate = await showDatePicker(
                   context: context,
                   firstDate: DateTime(1900),
                   initialDate: _selectedDate,
-                  lastDate: DateTime.now().subtract(Duration(days: 365 * 14)),
+                  lastDate: DateTime.now().subtract(const Duration(days: 365 * 14)),
                 );
                 if (newDate != null) {
                   _selectedDate = newDate;
@@ -129,12 +124,12 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 setState(() {});
               },
             ),
-            Spacer(),
+            const Spacer(),
             TextButton(
               onPressed: () {
                 context.read<UserCubit>().logout();
               },
-              child: Text('Logout'),
+              child: const Text('Logout'),
             ),
           ],
         ),

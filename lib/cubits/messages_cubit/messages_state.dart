@@ -3,10 +3,9 @@ import 'package:equatable/equatable.dart';
 import '../../models/message.dart';
 
 class MessagesState extends Equatable {
+  const MessagesState({this.messages = const [], this.isLoading = false});
   final List<Message> messages;
   final bool isLoading;
-
-  const MessagesState({this.messages = const [], this.isLoading = false});
 
   MessagesState copyWith({List<Message>? messages, bool? isLoading}) {
     return MessagesState(
