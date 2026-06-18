@@ -51,6 +51,7 @@ analyzer:
     - "lib/l10n/**"
     - "**/.arb"
     - "test/**"
+    - "lib/firebase_options.dart"
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options
