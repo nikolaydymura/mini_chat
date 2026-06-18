@@ -21,6 +21,10 @@ jobs:
           flutter-version: ${{ vars.FLUTTER_VERSION }}
           channel: 'stable'
           cache: true
+      - run: |
+          echo '${{ vars.FIREBASE_OPTIONS_DART }}' > lib/firebase_options.dart
+          echo '${{ vars.GOOGLE_SERVICES_JSON }}' > android/app/google-services.json
+        name: Copy Missed files (Remove for private repositories)
       - run: flutter analyze lib
         name: Analyzing sources
       - run: dart format lib --set-exit-if-changed
@@ -45,6 +49,10 @@ jobs:
           flutter-version: ${{ vars.FLUTTER_VERSION }}
           channel: 'stable'
           cache: 'true'
+      - run: |
+          echo '${{ vars.FIREBASE_OPTIONS_DART }}' > lib/firebase_options.dart
+          echo '${{ vars.GOOGLE_SERVICES_JSON }}' > android/app/google-services.json
+        name: Copy Missed files (Remove for private repositories)
       - uses: actions/cache@v4
         with:
           path: |
